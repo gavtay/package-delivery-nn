@@ -72,11 +72,12 @@ def getAddress(address):
 
 # instantiate 3 truck objects to represent the 3 active working trucks delivering packages
 truck_1 = Truck.Truck(16, 18, None, [1, 2, 13, 14, 15, 19, 20, 21, 29, 30, 31, 34, 40], 0.0, "4001 South 700 East", datetime.timedelta(hours=8))
-truck_2 = Truck.Truck(16, 18, None, [3, 6, 7, 8, 9, 10, 11, 18, 25, 26, 28, 32, 36, 38], 0.0, "4001 South 700 East", datetime.timedelta(hours=10, minutes=20))
+truck_2 = Truck.Truck(16, 18, None, [3, 6, 7, 8, 9, 10, 11, 18, 25, 26, 28, 32, 36, 38], 0.0, "4001 South 700 East", datetime.timedelta(hours=10, minutes=21))
 truck_3 = Truck.Truck(16, 18, None, [4, 5, 12, 16, 17, 22, 23, 24, 27, 33, 35, 37, 39], 0.0, "4001 South 700 East", datetime.timedelta(hours=9, minutes=5))
 
+# function to sort packages by nearest neighbor algorithm
 def truckDeliverPackages(truck_1, truck_2, truck3):
-    if truck_1 == "At Hub":
+    # if truck_1 == "At Hub":
 
 
 class Main:
