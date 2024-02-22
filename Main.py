@@ -29,7 +29,7 @@ hash_table = Hashtable.CreateHashTable()
 # Source:
 # C950 - Webinar-3 - How to Dijkstra?
 # W-3_ChainingHashTable_zyBooks_Key-Value_CSV_Greedy_Dijkstra.py
-def loadPackageAttributes(CSVPackageDetails):
+def loadPackageAttributes(CSVPackageDetails, hash_table):
     with open(CSVPackageDetails) as csvfile:
         packageDetails = csv.reader(csvfile)
 
@@ -76,9 +76,54 @@ truck_2 = Truck.Truck(16, 18, None, [3, 6, 7, 8, 9, 10, 11, 18, 25, 26, 28, 32, 
 truck_3 = Truck.Truck(16, 18, None, [4, 5, 12, 16, 17, 22, 23, 24, 27, 33, 35, 37, 39], 0.0, "4001 South 700 East", datetime.timedelta(hours=9, minutes=5))
 
 # function to sort packages by nearest neighbor algorithm
-def truckDeliverPackages(truck_1, truck_2, truck3):
-    # if truck_1 == "At Hub":
+def truckDeliverPackages(truckx):
+    #create an empty array that the packages will temporarily be placed in to be sorted
+    notDeliveredArray = []
+    #loop through the packages in the truck objects packages attribute, append the package to notDeliveredArray
+    for packageID in truck.packages:
+        package = hash_table.lookup(packageID)
+        notDeliveredArray.append(package)
 
+    # clear the trucks package list so the packages can be placed in the correct order
+    truck.packages.clear()
+
+    # loop through notDeliveredArray, sorting packages until the array is empty
+    while len(notDeliveredArray) > 0:
+        nextAddressDistance = 2000
+        nextPackage = None
+
+        # loop through the notDeliveredArray which is populated with each trucks packages
+        for package in notDeliveredArray:
+            # if the distance for a given route is less than the previous, store that address into the next_address variable and store package in next package, loop
+            if getDistance(getAddress(truck.deliveryAddress), getAddress(package.packageDeliveryAddress)) <= nextAddressDistance:
+                nextAddressDistance = getDistance(getAddress(truck.deliveryAddress), getAddress(package.packageDeliveryAddress))
+                nextPackage = package
+
+        # add next package back to the packages array
+        truck.packages.append(nextPackage.ID)
+
+        # remove next package from notDeliveredArray
+        notDeliveredArray.remove(nextPackage)
+
+        # add the distance to the next address to the distanceTraveled property of the truck class
+        truck.distanceTraveled += nextAddressDistance
+
+        # change the trucks current location to the address that it is going to
+        truck.currentLocation = nextPackage.address
+
+        # adds the time it took to deliver the package to the truck time property of the truck class
+        # math from for this was given in WGU resources
+        truck.truckTime += datetime.timedelta(hours=nextAddressDistance / 18)
+        nextPackage.packageDeliveryTime = truck.truckTime
+        nextPackage.packageDepartureTime = truck.timeDeparted
+
+# load the trucks
+truckDeliverPackages(truck_1)
+truckDeliverPackages(truck_2)
+
+#load the third truck after truck_1 or truck_2 return back to the hub
+truck_3.timeDeparted = min(truck_1.truckTime, truck_2.truckTime)
+truckDeliverPackages(truck_3)
 
 class Main:
 # create an interactive CLI for the user to see the information
