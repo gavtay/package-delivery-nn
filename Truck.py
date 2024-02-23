@@ -1,28 +1,24 @@
 class Truck:
-    def __init__(self, maxLoad, truckSpeed, loadPackages, packages, distanceTraveled, deliveryAddress, currentLocation, truckTime, timeDeparted, truckStatus):
+    def __init__(self, max_load, truck_speed, load_packages, packages, distance_traveled, delivery_address,
+                 time_departed):
         # object properties
-        self.maxLoad = 16
-        self.truckSpeed = 18
-        self.loadPackages = loadPackages
+        self.max_load = 16
+        self.truck_speed = 18
+        self.load_packages = load_packages
         self.packages = packages
-        self.distanceTraveled = distanceTraveled
-        self.deliveryAddress = deliveryAddress
-        self.currentLocation = currentLocation
-        self.truckTime = truckTime
-        self.timeDeparted = timeDeparted
-        self.truckStatus = "At Hub"
+        self.distance_traveled = distance_traveled
+        self.delivery_address = delivery_address
+        self.time_departed = time_departed
+        self.time = time_departed
 
     def __str__(self):
         # what should be returned when object is represented as string
-        return "%s, %s, %s, %s, %s, %s, %s, %s, %s, %s" % (
-            self.maxLoad,
-            self.truckSpeed,
-            self.loadPackages,
+        return "%s, %s, %s, %s, %s, %s, %s" % (
+            self.max_load,
+            self.truck_speed,
+            self.load_packages,
             self.packages,
-            self.distanceTraveled,
-            self.deliveryAddress,
-            self.currentLocation,
-            self.truckTime,
-            self.timeDeparted,
-            self.truckStatus
+            self.distance_traveled,
+            self.delivery_address,
+            self.time_departed
         )
