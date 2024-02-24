@@ -50,11 +50,12 @@ def load_package_attributes(CSVPackageDetails, hash_table):
 
 
 def get_distance(x, y):
-    # get the distance from Distances.csv
+    print('first: ' + x + ' second: ' + y)
     distanceBetween = CSVDistances[x][y]
     if distanceBetween == '':
-        distanceBetween == CSVDistances[y][x]
+        distanceBetween = CSVDistances[y][x]  # Fix: Use '=' instead of '=='
 
+    print(f"Distance between {x} and {y}: {distanceBetween}")
     return float(distanceBetween)
 
 
@@ -62,6 +63,7 @@ def get_address(address):
     # get the row from DeliveryAddresses.csv string literal
     for row in CSVAddresses:
         if address in row[2]:
+            print(f"Address {address} found at row {row[0]}")
             return int(row[0])
 
 
@@ -83,12 +85,14 @@ def truck_deliver_packages(truck):
     notDeliveredArray = []
     # loop through the packages in the truck objects packages attribute, append the package to notDeliveredArray
     for packageID in truck.packages:
-        # package = hash_table.lookup(packageID)
         package = hash_table.search(packageID)
         notDeliveredArray.append(package)
 
     # clear the trucks package list so the packages can be placed in the correct order
     truck.packages.clear()
+
+    # DEBUG DELETE THIS
+    print(f"Initial notDeliveredArray: {notDeliveredArray}")
 
     # loop through notDeliveredArray, sorting packages until the array is empty
     while len(notDeliveredArray) > 0:
@@ -97,39 +101,48 @@ def truck_deliver_packages(truck):
 
         # loop through the notDeliveredArray which is populated with each truck package
         for package in notDeliveredArray:
+            # check if the package is not None before accessing its attributes
+            # if package is not None:
+            print('Package is not none, getting the distance')
             # if the distance for a given route is less than the previous,
             # store that address into the next_address variable and store package in next package, loop
-            if (get_distance(get_address(truck.delivery_address), get_address(package.packageDeliveryAddress)) <=
+            if (get_distance(get_address(truck.delivery_address), get_address(package.package_delivery_address)) <=
                     nextAddressDistance):
                 nextAddressDistance = get_distance(get_address(truck.delivery_address),
-                                                   get_address(package.packageDeliveryAddress))
+                                                   get_address(package.package_delivery_address))
                 nextPackage = package
 
-        # add next package back to the packages array
-        truck.packages.append(nextPackage.packageID)
+        # add next package back to the packages array if found
+        if nextPackage is not None:
+            truck.packages.append(nextPackage.packageID)
 
-        # remove next package from notDeliveredArray
-        notDeliveredArray.remove(nextPackage)
+            # remove next package from notDeliveredArray
+            notDeliveredArray.remove(nextPackage)
 
-        # add the distance to the next address to the distanceTraveled property of the truck class
-        truck.distanceTraveled += nextAddressDistance
+            # add the distance to the next address to the distanceTraveled property of the truck class
+            truck.distanceTraveled += nextAddressDistance
 
-        # change the trucks current location to the address that it is going to
-        truck.currentLocation = nextPackage.packageDeliveryAddress
+            # change the trucks current location to the address that it is going to
+            truck.currentLocation = nextPackage.packageDeliveryAddress
 
-        # adds the time it took to deliver the package to the truck time property of the truck class
-        # math from for this was given in WGU resources
-        truck.truckTime += datetime.timedelta(hours=nextAddressDistance / 18)
-        nextPackage.packageDeliveryTime = truck.truckTime
-        nextPackage.packageDepartureTime = truck.timeDeparted
+            # adds the time it took to deliver the package to the truck time property of the truck class
+            # math from for this was given in WGU resources
+            truck.truckTime += datetime.timedelta(hours=nextAddressDistance / 18)
+            nextPackage.packageDeliveryTime = truck.truckTime
+            nextPackage.packageDepartureTime = truck.timeDeparted
+        else:
+            # Break the loop if nextPackage is None
+            break
+
+        # Add a print statement to help debug
+        print(f"Not delivered packages: {notDeliveredArray}")
 
 
 # load the trucks
 truck_deliver_packages(truck_1)
 truck_deliver_packages(truck_2)
-
 # load the third truck after truck_1 or truck_2 return back to the hub
-truck_3.timeDeparted = min(truck_1.truck_time, truck_2.truck_time)
+truck_3.timeDeparted = min(truck_1.time, truck_2.time)
 truck_deliver_packages(truck_3)
 
 # load hash table with package details
