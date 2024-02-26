@@ -66,14 +66,20 @@ def extract_address(address):
         if address in row[2]:
             return int(row[0])
 
+# 1, 2, 13, 14, 15, 19, 20, 21, 29, 30, 31, 34, 40
+# 3, 6, 7, 8, 9, 10, 11, 18, 25, 26, 28, 32, 36, 38
+# 4, 5, 12, 16, 17, 22, 23, 24, 27, 33, 35, 37, 39
+
+# should be 100.5
+
 
 # instantiate 3 truck objects to represent the 3 active working trucks delivering packages
 truck_1 = Truck.Truck(16, 18, None, [1, 2, 13, 14, 15, 19, 20, 21, 29, 30, 31, 34, 40], 0.0, "4001 South 700 East",
                      datetime.timedelta(hours=8))
 truck_2 = Truck.Truck(16, 18, None, [3, 6, 7, 8, 9, 10, 11, 18, 25, 26, 28, 32, 36, 38], 0.0,
-                     "4001 South 700 East", datetime.timedelta(hours=10, minutes=21))
+                     "4001 South 700 East", datetime.timedelta(hours=10, minutes=20))
 truck_3 = Truck.Truck(16, 18, None, [4, 5, 12, 16, 17, 22, 23, 24, 27, 33, 35, 37, 39], 0.0, "4001 South 700 East",
-                     datetime.timedelta(hours=9, minutes=10))
+                     datetime.timedelta(hours=9, minutes=5))
 
 # instantiate package hash table
 hash_table = CreateHashTable()
@@ -111,22 +117,28 @@ def deliver_truck_packages(truck):
                 nextPackage = package
 
         # add next package back to the packages array if found
-        if nextPackage is not None:
-            truck.packages.append(nextPackage.packageID)
+        truck.packages.append(nextPackage.packageID)
 
-            not_delivered.remove(nextPackage)
+        not_delivered.remove(nextPackage)
 
-            # Takes the mileage driven to this packaged into the truck.mileage attribute
-            truck.distance_traveled += nextAddress
+        # Takes the mileage driven to this packaged into the truck.mileage attribute
+        truck.distance_traveled += nextAddress
 
-            truck.address = nextPackage.package_delivery_address
+        # DEBUG
+        print(f"Updated distance traveled: {truck.distance_traveled}")
 
-            # adds the time it took to deliver the package to the truck time property of the truck class
-            # math from for this was given in WGU resources
-            # Updates the time it took for the truck to drive to the nearest package
-            truck.time += datetime.timedelta(hours=nextAddress / 18)
-            nextPackage.packageDeliveryTime = truck.time
-            nextPackage.packageDepartureTime = truck.time_departed
+        truck.delivery_address = nextPackage.package_delivery_address
+
+        print('Truck current address: ' + truck.delivery_address)
+
+        # adds the time it took to deliver the package to the truck time property of the truck class
+        # math from for this was given in WGU resources
+        # Updates the time it took for the truck to drive to the nearest package
+        truck.time += datetime.timedelta(hours=nextAddress / 18)
+        nextPackage.packageDeliveryTime = truck.time
+        nextPackage.packageDepartureTime = truck.time_departed
+    # DEBUG
+    print(f"Final total mileage: {truck.distance_traveled}")
 
 
 # load the trucks
@@ -137,21 +149,24 @@ deliver_truck_packages(truck_2)
 truck_3.depart_time = min(truck_1.time, truck_2.time)
 deliver_truck_packages(truck_3)
 
+
 class Main:
     # create an interactive CLI for the user to see the information
     menuNumber = 0
     singlePackageID = 0
 
     while menuNumber != 4:
-        # userSelectedTime = input("Please enter a time to check status of package(s). HH:MM:SS ")
-        # try:
-        #     (h, m, s) = userSelectedTime.split(":")
-        #     convert_time_delta = datetime.timedelta(hours=int(h), minutes=int(m), seconds=int(s))
-        # except ValueError:
-        #     print("Invalid time format. Please enter the time in HH:MM:SS.")
-        #     continue
+        userSelectedTime = input("Please enter a time to check status of package(s). HH:MM:SS ")
+        try:
+            (h, m, s) = userSelectedTime.split(":")
+            convert_time_delta = datetime.timedelta(hours=int(h), minutes=int(m), seconds=int(s))
+        except ValueError:
+            print("Invalid time format. Please enter the time in HH:MM:SS.")
+            continue
 
         print('*****--------------- WGUPS Task 2 ---------------*****')
+        print('Total Truck Mileage: ' + str(truck_1.distance_traveled + truck_2.distance_traveled +
+                                            truck_3.distance_traveled))
         print('Type 1 to print all Package Status and Total Mileage')
         print('Type 2 to get a Single Package Status with a time')
         print('Type 3 to get all Package Status with a time')
@@ -167,10 +182,9 @@ class Main:
             # print all package status and total mileage
             print('Printing all package status and total mileage...')
             print('ID, Address, City, State, Zipcode, Deadline, Weight, Status, Departure Time, Delivery Time')
-            # print('2 | 123 Rod Rd | FTW | TX | 76126 | 10:00 | 12.5lbs | ... | Delivered | 08:32')
             for packageID in range(1, 41):
                 package = hash_table.lookup(packageID)
-                # package.update_status(convert_time_delta)
+                package.update_status(convert_time_delta)
                 print(str(package))
 
             print('Total mileage for route: ' +
