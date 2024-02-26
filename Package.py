@@ -30,9 +30,12 @@ class Package:
 
     # determine whether the package is at the hub, en route, or delivered
     def update_status(self, convert_timedelta):
-        if self.packageDeliveryTime < convert_timedelta:
+        if self.packageStatus == "Delivered":
+            return  # No need to update status if already delivered
+
+        if self.packageDeliveryTime and convert_timedelta >= self.packageDeliveryTime:
             self.packageStatus = "Delivered"
-        elif self.packageDepartureTime > convert_timedelta:
+        elif self.packageDepartureTime and convert_timedelta >= self.packageDepartureTime:
             self.packageStatus = "En route"
         else:
             self.packageStatus = "At Hub"

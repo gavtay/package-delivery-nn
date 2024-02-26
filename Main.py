@@ -126,6 +126,10 @@ def deliver_truck_packages(truck):
 
         truck.delivery_address = nextPackage.package_delivery_address
 
+        if truck.delivery_address == nextPackage.package_delivery_address:
+            nextPackage.packageDeliveryTime = truck.time
+            nextPackage.packageStatus = "En route"
+
         # adds the time it took to deliver the package to the truck time property of the truck class
         # math from for this was given in WGU resources
         # Updates the time it took for the truck to drive to the nearest package
@@ -186,7 +190,7 @@ class Main:
         if menuNumber == 2:
             # print single package status with a time
             # get input asking for what package id
-            print('Printing single package status with a time...')
+            print('Printing single package status with a time of: ' + userSelectedTime)
             singlePackageID = input('What is the ID of the single package you want to search? ')
             singlePackage = hash_table.lookup(int(singlePackageID))
             singlePackage.update_status(convert_time_delta)
@@ -194,6 +198,7 @@ class Main:
 
         if menuNumber == 3:
             # print all package status at a specific time
+            print('Printing all packages status with a time of: ' + userSelectedTime)
             for packageID in range(1, 41):
                 package = hash_table.lookup(packageID)
                 package.update_status(convert_time_delta)
