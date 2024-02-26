@@ -124,12 +124,7 @@ def deliver_truck_packages(truck):
         # Takes the mileage driven to this packaged into the truck.mileage attribute
         truck.distance_traveled += nextAddress
 
-        # DEBUG
-        print(f"Updated distance traveled: {truck.distance_traveled}")
-
         truck.delivery_address = nextPackage.package_delivery_address
-
-        print('Truck current address: ' + truck.delivery_address)
 
         # adds the time it took to deliver the package to the truck time property of the truck class
         # math from for this was given in WGU resources
@@ -137,8 +132,6 @@ def deliver_truck_packages(truck):
         truck.time += datetime.timedelta(hours=nextAddress / 18)
         nextPackage.packageDeliveryTime = truck.time
         nextPackage.packageDepartureTime = truck.time_departed
-    # DEBUG
-    print(f"Final total mileage: {truck.distance_traveled}")
 
 
 # load the trucks
@@ -195,7 +188,14 @@ class Main:
             # get input asking for what package id
             print('Printing single package status with a time...')
             singlePackageID = input('What is the ID of the single package you want to search? ')
+            singlePackage = hash_table.lookup(int(singlePackageID))
+            singlePackage.update_status(convert_time_delta)
+            print(str(singlePackage))
 
         if menuNumber == 3:
-            # print all package status with a time
-            print('Print all package status with a time...')
+            # print all package status at a specific time
+            for packageID in range(1, 41):
+                package = hash_table.lookup(packageID)
+                package.update_status(convert_time_delta)
+                print(str(package))
+
