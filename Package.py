@@ -1,3 +1,6 @@
+import datetime
+
+
 class Package:
     def __init__(self, package_id, package_delivery_address, package_delivery_city, package_delivery_state,
                  package_delivery_zip, package_delivery_deadline, package_weight, package_status):
@@ -32,6 +35,9 @@ class Package:
     def update_status(self, convert_timedelta):
         if self.packageStatus == "Delivered":
             return  # No need to update status if already delivered
+
+        if self.packageID == 9 and convert_timedelta >= datetime.timedelta(hours=10, minutes=20):
+            self.package_delivery_address = "410 S. State St., Salt Lake City, UT"
 
         if self.packageDeliveryTime and convert_timedelta >= self.packageDeliveryTime:
             self.packageStatus = "Delivered"

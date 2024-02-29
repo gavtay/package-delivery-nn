@@ -66,18 +66,12 @@ def extract_address(address):
         if address in row[2]:
             return int(row[0])
 
-# 1, 2, 13, 14, 15, 19, 20, 21, 29, 30, 31, 34, 40
-# 3, 6, 7, 8, 9, 10, 11, 18, 25, 26, 28, 32, 36, 38
-# 4, 5, 12, 16, 17, 22, 23, 24, 27, 33, 35, 37, 39
-
-# should be 100.5
-
 
 # instantiate 3 truck objects to represent the 3 active working trucks delivering packages
 truck_1 = Truck.Truck(16, 18, None, [1, 2, 13, 14, 15, 19, 20, 21, 29, 30, 31, 34, 40], 0.0, "4001 South 700 East",
                      datetime.timedelta(hours=8))
 truck_2 = Truck.Truck(16, 18, None, [3, 6, 7, 8, 9, 10, 11, 18, 25, 26, 28, 32, 36, 38], 0.0,
-                     "4001 South 700 East", datetime.timedelta(hours=10, minutes=20))
+                     "4001 South 700 East", datetime.timedelta(hours=10, minutes=21))
 truck_3 = Truck.Truck(16, 18, None, [4, 5, 12, 16, 17, 22, 23, 24, 27, 33, 35, 37, 39], 0.0, "4001 South 700 East",
                      datetime.timedelta(hours=9, minutes=5))
 
@@ -143,7 +137,9 @@ deliver_truck_packages(truck_1)
 deliver_truck_packages(truck_2)
 # The below line of code ensures that truck 3 does not leave until either of the first two trucks are finished
 # delivering their packages
-truck_3.depart_time = min(truck_1.time, truck_2.time)
+
+# fixed to correct time_departed
+truck_3.time_departed = min(truck_1.time, truck_2.time)
 deliver_truck_packages(truck_3)
 
 
@@ -180,6 +176,8 @@ class Main:
             print('Printing all package status and total mileage...')
             print('Truck, ID, Address, City, State, Zipcode, Deadline, Weight, Status, Departure Time, Delivery Time')
             for packageID in range(1, 41):
+                if packageID == 9:
+                    print("Delivery address for Package 9 updated to: 410 S. State St., Salt Lake City, UT")
                 package = hash_table.lookup(packageID)
                 package.update_status(convert_time_delta)
 
