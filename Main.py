@@ -178,11 +178,18 @@ class Main:
         if menuNumber == 1:
             # print all package status and total mileage
             print('Printing all package status and total mileage...')
-            print('ID, Address, City, State, Zipcode, Deadline, Weight, Status, Departure Time, Delivery Time')
+            print('Truck, ID, Address, City, State, Zipcode, Deadline, Weight, Status, Departure Time, Delivery Time')
             for packageID in range(1, 41):
                 package = hash_table.lookup(packageID)
                 package.update_status(convert_time_delta)
-                print(str(package))
+
+                # added the truck to the print statement
+                if packageID in truck_1.packages:
+                    print('Truck 1, ' + str(package))
+                elif packageID in truck_2.packages:
+                    print('Truck 2, ' + str(package))
+                else:
+                    print('Truck 3, ' + str(package))
 
             print('Total mileage for route: ' +
                   str(truck_1.distance_traveled + truck_2.distance_traveled + truck_3.distance_traveled))
@@ -194,7 +201,14 @@ class Main:
             singlePackageID = input('What is the ID of the single package you want to search? ')
             singlePackage = hash_table.lookup(int(singlePackageID))
             singlePackage.update_status(convert_time_delta)
-            print(str(singlePackage))
+
+            # added the truck to the print statement
+            if singlePackageID in truck_1.packages:
+                print('Truck 1, ' + str(singlePackage))
+            elif singlePackageID in truck_2.packages:
+                print('Truck 2, ' + str(singlePackage))
+            else:
+                print('Truck 3, ' + str(singlePackage))
 
         if menuNumber == 3:
             # print all package status at a specific time
@@ -202,5 +216,12 @@ class Main:
             for packageID in range(1, 41):
                 package = hash_table.lookup(packageID)
                 package.update_status(convert_time_delta)
-                print(str(package))
+
+                # added the truck to the print statement
+                if packageID in truck_1.packages:
+                    print('Truck 1, ' + str(package))
+                elif packageID in truck_2.packages:
+                    print('Truck 2, ' + str(package))
+                else:
+                    print('Truck 3, ' + str(package))
 
